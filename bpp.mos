@@ -1,0 +1,52 @@
+model Binpacking
+ uses "mmxprs"
+
+ parameters
+  NUM_OF_ITEMS = 90                     
+  BIN_CAPACITY = 50                        
+ end-parameters
+ 
+ declarations
+  NUM_OF_BINS = NUM_OF_ITEMS
+  INDICES = 1..NUM_OF_ITEMS                       
+  WEIGHTS: array(INDICES) of integer           
+ 
+  BIN_CONTAINS_ITEM: array(INDICES,INDICES) of mpvar ! Either 0 or 1
+  IS_BIN_USED: array(INDICES) of mpvar ! Either 0 or 1
+ 
+  NUM_OF_USED_BINS: linctr ! Objective Function
+ end-declarations
+
+ ! Input array
+ WEIGHTS :: [8, 9, 5, 4, 6, 9, 6, 8, 9, 5, 3, 6, 4, 7, 4, 4, 1, 7, 4, 7, 2, 9, 9, 2, 6, 6, 8, 8, 2, 3, 8, 9, 5, 4, 6, 9, 6, 8, 9, 5, 3, 6, 4, 7, 4, 4, 1, 7, 4, 7, 2, 9, 9, 2, 6, 6, 8, 8, 2, 3, 8, 9, 5, 4, 6, 9, 6, 8, 9, 5, 3, 6, 4, 7, 4, 4, 1, 7, 4, 7, 2, 9, 9, 2, 6, 6, 8, 8, 2, 3]
+ ! Enforce variables to be binary
+ forall(b in INDICES,i in INDICES) do
+  BIN_CONTAINS_ITEM(b,i) is_binary
+ end-do
+ 
+ ! Enforce variables to be binary
+ forall(b in INDICES) do
+  IS_BIN_USED(b) is_binary
+ end-do
+ 
+! Make sure that each item is in at most one bin 
+ forall(i in INDICES) do
+  sum(b in INDICES) BIN_CONTAINS_ITEM(b,i) <= 1 
+ end-do
+ 
+! Make sure that used bin capacities are smaller than the total capacity of a bin
+ forall(b in INDICES) do
+  sum(i in INDICES) BIN_CONTAINS_ITEM(b,i)*WEIGHTS(i) <= BIN_CAPACITY * IS_BIN_USED(b)
+ end-do
+ 
+! Make sure that each item is contained in at least one bin
+ sum(b in INDICES,i in INDICES) BIN_CONTAINS_ITEM(b,i) = NUM_OF_ITEMS
+
+! Set the objective function
+ NUM_OF_USED_BINS := sum(b in INDICES) IS_BIN_USED(b)
+
+! Minimize the objective function
+ minimize(NUM_OF_USED_BINS) 
+ 
+ writeln("Number of used bins: ", getobjval)
+end-model
