@@ -1,2 +1,5 @@
 # Bin_Packing_Problem
 This project is created and submitted for the course IE400 Principles of Engineering Management provided by Bilkent University Industrial Engineering Department.
+Please take a look at the report for the detailed explanation and analysis. 
+## Description
+The main goal of this project is to write two programs, an exact solver and a heuristic solver, which aim to minimize the number of bins used, as defined in Bin Packing Problem (BPP). In this problem, we are given n items of different weights w 1 , w 2 , …, w n and bins S 1 , S 2 , …, S m each of capacity C. The objective is to assign each item to a bin such that number of total used bins is minimized. It is assumed that all items have weights smaller than bin capacity. In this report, the heuristic algorithm we chose to implement will be explained in detail. Then, some test results for randomly generated instances will be provided to demonstrate and discuss the differences between the heuristic algorithm, which was implemented in python, and the exact algorithm, which was implemented on Xpress Solver. Lastly, we will discuss the findings of this project.
